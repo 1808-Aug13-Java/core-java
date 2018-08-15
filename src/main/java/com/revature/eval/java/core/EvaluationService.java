@@ -90,18 +90,28 @@ public class EvaluationService {
 		}
 
 		public boolean isEquilateral() {
-			// TODO Write an implementation for this method declaration
-			return false;
+			// Return true if all sides are equal
+			return (sideOne == sideTwo) && (sideTwo == sideThree);
 		}
 
 		public boolean isIsosceles() {
-			// TODO Write an implementation for this method declaration
+			// Return true if two sides are equal, and one is not equal to the 
+			// other two. 
+			if ((sideOne == sideTwo) && (sideOne != sideThree)) {
+				return true;
+			} else if (sideOne == sideThree && sideOne != sideTwo) {
+				return true;
+			} else if (sideTwo == sideThree && sideTwo != sideOne) {
+				return true;
+			}
 			return false;
 		}
 
 		public boolean isScalene() {
-			// TODO Write an implementation for this method declaration
-			return false;
+			// Return true if none of the sides are equal
+			return (sideOne != sideTwo) 
+					&& (sideTwo != sideThree) 
+					&& (sideThree != sideOne);
 		}
 
 	}
