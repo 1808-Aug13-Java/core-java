@@ -14,8 +14,17 @@ public class EvaluationService {
 	 * @return
 	 */
 	public String reverse(String string) {
-		// TODO Write an implementation for this method declaration
-		return null;
+		// Add each character to an array, reversing the order of the characters 
+		// by adding the characters from the front of the string to the back of the
+		// array. 
+		char[] characters = new char[string.length()];
+		
+		for (int i=0; i<string.length(); i++) {
+			characters[characters.length-1-i] = string.charAt(i);
+		}
+		
+		// Return a string created from the character array
+		return String.valueOf(characters);
 	}
 
 	/**
