@@ -311,10 +311,67 @@ public class EvaluationService {
 		private List<T> sortedList;
 
 		public int indexOf(T t) {
-			// TODO Write an implementation for this method declaration
-			return 0;
+			// In order to perform a binary search, elements must have some notion 
+			// of which is greater or otherwise be comparable. Therefore, the list 
+			// must be of comparable things. It will throw a ClassCastException if 
+			// it isn't of comparable things. 
+			List<Comparable<T>> list = (List<Comparable<T>>) sortedList;
+			Comparable<T> searchFor = (Comparable<T>) t;
+			
+			return indexOf(list, searchFor, 0, sortedList.size()-1);
 		}
-
+		
+		/** 
+		 * Provided with an object {@code t} to search for, searches the sortedList 
+		 * for the specified object using a binary search from lowIndex to highIndex.
+		 * <br/><br/>
+		 * Note: This function assumes random access to the list elements, and a 
+		 * sorted list. 
+		 * @param list - The sorted list of comparable things.
+		 * @param searchFor - The comparable object to search for 
+		 * @param lowIndex - The lower bound to include in the search, inclusive 
+		 * @param highIndex - The upper bound to include in the search, inclusive 
+		 * @return The index of {@code t} or -1 if t was not found. 
+		 */
+		private int indexOf(List<Comparable<T>> list, Comparable<T> searchFor, 
+							int lowIndex, int highIndex) 
+		{
+			// Use a in the midpoint math to prevent possible overflow if both 
+			// lowIndex and highIndex are above 2^30
+			int midIndex = (int)((long)(lowIndex + highIndex) / 2L);
+			
+			// Get the result of calling compareTo on the object we are searching for 
+			// with the object at midIndex
+			int comparison = searchFor.compareTo(sortedList.get(midIndex));
+			
+			// If the midIndex is at the object we are searching for, return midIndex
+			if (comparison == 0) {
+				return midIndex;
+			}
+			
+			// If midIndex doesn't contain the object we seek and highIndex has met or 
+			// passed lowIndex, return -1 as the object isn't in the list. 
+			if (highIndex <= lowIndex) {
+				return -1;
+			}
+			
+			// Note: recursion is fine here. We won't blow the stack with 
+			// log2(2^31 elements) = 31 stack frames
+			
+			// Otherwise, if the object we are searching for is less than the element at
+			// mid index, recursively call indexOf with the highIndex set to midIndex - 1
+			// as we have eliminated the higher half of the list. 
+			if (comparison < 0) {
+				return indexOf(list, searchFor, lowIndex, midIndex - 1);
+			}
+			
+			// Otherwise, the object we are searching for is greater than the element at
+			// mid index, so recursively call indexOf with lowIndex set to midIndex + 1
+			// as we have eliminated the lower half of the list. 
+			return indexOf(list, searchFor, midIndex + 1, highIndex);
+		}
+		
+		
 		public BinarySearch(List<T> sortedList) {
 			super();
 			this.sortedList = sortedList;
