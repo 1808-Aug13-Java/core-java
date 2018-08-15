@@ -36,8 +36,36 @@ public class EvaluationService {
 	 * @return
 	 */
 	public String acronym(String phrase) {
-		// TODO Write an implementation for this method declaration
-		return null;
+		// Holds the acronym as we construct it
+		StringBuilder acronym = new StringBuilder();
+		
+		// A boolean to specify if the next letter we see in the string should 
+		// be added to the acronym. Default to true as the first letter should 
+		// be added to the acronym. 
+		boolean addNextLetter = true;
+		
+		// Loop through each character in the string adding the first letter of 
+		// word to the acronym. Words are delimited by non-letter characters. 
+		for (int i=0; i<phrase.length(); i++) {
+			// If we are not in the acronym character accepting state, 
+			// change back to the acronym character accepting state if we encounter 
+			// a non-letter. 
+			if (!addNextLetter) {
+				if (!Character.isAlphabetic(phrase.charAt(i))) {
+					addNextLetter = true;
+				}
+			}
+			// Otherwise, we are in the accepting state, which means that the next
+			// letter we encounter should be converted to uppercase and added to 
+			// the acronym. We then switch to the not accepting state
+			else if (Character.isAlphabetic(phrase.charAt(i))) {
+				acronym.append(Character.toUpperCase(phrase.charAt(i)));
+				addNextLetter = false;
+			}
+		}
+		
+		
+		return acronym.toString();
 	}
 
 	/**
