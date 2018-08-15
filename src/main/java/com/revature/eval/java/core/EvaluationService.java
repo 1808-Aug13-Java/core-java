@@ -168,8 +168,34 @@ public class EvaluationService {
 	 * NANP-countries, only 1 is considered a valid country code.
 	 */
 	public String cleanPhoneNumber(String string) {
-		// TODO Write an implementation for this method declaration
-		return null;
+		final int P_NUMBER_LENGTH = 10;
+//		System.out.println("Input Number:  " + string);
+		// First, remove all non number characters. 
+		String filteredString = string.replaceAll("[^0-9]+", "");
+		
+		// If we have less than 10 numbers, throw an illegal argument exception
+		if (filteredString.length() < P_NUMBER_LENGTH) {
+			throw new IllegalArgumentException("Phone Numbers must have at least " 
+											+ P_NUMBER_LENGTH 
+											+ " digits: " 
+											+ string);
+		}
+		
+		// If we have more than 11 numbers, throw an exception
+		if (filteredString.length() > P_NUMBER_LENGTH + 1) {
+			throw new IllegalArgumentException("Phone Numbers must have at most " 
+												+ (P_NUMBER_LENGTH + 1)
+												+ " digits: " 
+												+ string);
+		}
+		
+		// If we have more than 10 numbers, remove the country code number
+		if (filteredString.length() > P_NUMBER_LENGTH) {
+			filteredString = filteredString.substring(filteredString.length() - P_NUMBER_LENGTH);
+		}
+//		System.out.println("Output Number: " + filteredString);
+		
+		return filteredString;
 	}
 
 	/**
