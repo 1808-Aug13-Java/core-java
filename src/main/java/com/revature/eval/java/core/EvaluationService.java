@@ -1,8 +1,10 @@
 package com.revature.eval.java.core;
 
 import java.time.temporal.Temporal;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 
 public class EvaluationService {
 
@@ -44,14 +46,18 @@ public class EvaluationService {
 		// be added to the acronym. 
 		boolean addNextLetter = true;
 		
+		// Holds individual characters as we traverse the phrase
+		char character = ' ';
+		
 		// Loop through each character in the string adding the first letter of 
 		// word to the acronym. Words are delimited by non-letter characters. 
 		for (int i=0; i<phrase.length(); i++) {
-			// If we are not in the acronym character accepting state, 
-			// change back to the acronym character accepting state if we encounter 
-			// a non-letter. 
+			// If we are not in the acronym character accepting state, change back to 
+			// the acronym character accepting state if we encounter a non-letter. 
+			// Also, add a special case for the "'" character, as usually a part of 
+			// words, and so shouldn't be counted as space between words
 			if (!addNextLetter) {
-				if (!Character.isAlphabetic(phrase.charAt(i))) {
+				if (!Character.isAlphabetic(phrase.charAt(i)) && phrase.charAt(i) != '\'') {
 					addNextLetter = true;
 				}
 			}
@@ -237,6 +243,16 @@ public class EvaluationService {
 	 */
 	public Map<String, Integer> wordCount(String string) {
 		// TODO Write an implementation for this method declaration
+		// A map to hold the occurrences of the different words that occurred 
+		HashMap<String, Integer> wordCounts = new HashMap<>();
+		
+		// A scanner that is used to parse the contents of the string 
+		Scanner parser = new Scanner(string);
+		// Set to delimit on 
+		parser.useDelimiter("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
+		//TODO: Consider another way of parsing that doesn't involve string.split, as
+		//TODO: it is inefficient. 
+		
 		return null;
 	}
 
