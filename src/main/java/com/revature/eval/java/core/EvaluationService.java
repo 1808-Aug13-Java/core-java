@@ -314,7 +314,7 @@ public class EvaluationService {
 			// In order to perform a binary search, elements must have some notion 
 			// of which is greater or otherwise be comparable. Therefore, the list 
 			// must be of comparable things. It will throw a ClassCastException if 
-			// it isn't of comparable things. 
+			// T is not a comparable type. 
 			List<Comparable<T>> list = (List<Comparable<T>>) sortedList;
 			Comparable<T> searchFor = (Comparable<T>) t;
 			
@@ -425,8 +425,40 @@ public class EvaluationService {
 	 * @return
 	 */
 	public boolean isArmstrongNumber(int input) {
-		// TODO Write an implementation for this method declaration
-		return false;
+		// There are a few solutions, one with string manipulation that is more 
+		// scalable. However, I figured that the math library would be faster. 
+		// Besides, it's just a demo anyway. 
+		
+		// First, get the number of digits in the number. This is easy as we 
+		// can cast to double without loss of precision, take the log10 of 
+		// this base 10 number, and truncate and +1 to get the result. 
+		int digits = ((int)Math.log10(Math.abs((double)input))) + 1;
+		
+		// The sum of the powers of digits. Keep this as a double as results might 
+		// be larger than an integer can hold. 
+		double armstrongSum = 0;
+		
+		// Holds an individual digit of the input number
+		int digit = 0;
+		
+		System.out.println("Input: " + input);
+		System.out.println("Digits: " + digits);
+		
+		// Next, compare each individual digit from the lowest to highest digit
+		for (int i=0; i<digits; i++) {
+			// Use (number % 10^(i+1)) / 10^i to get each individual digit in 
+			// the number. 
+			digit = (int)(input % Math.pow(10, i+1) / Math.pow(10, i));
+			System.out.println("\ti=" + i + "  digit=" + digit);
+			
+			// Then add the digit raised to the power of total digits
+			// Example: 9^9 is already larger than an integer can hold. 
+			armstrongSum += Math.pow(digit, digits);
+		}
+		
+		// If the armstrongSum is equal to the input, the input number is an 
+		// Armstrong number. 
+		return armstrongSum == (double)input;
 	}
 
 	/**
