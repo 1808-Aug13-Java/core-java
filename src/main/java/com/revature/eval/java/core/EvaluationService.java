@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -484,37 +485,61 @@ public class EvaluationService {
 		// A list of prime factors of l
 		LinkedList<Long> primeFactors = new LinkedList<>();
 		
-		while (!isPrime(l)) {
+		// Get the set of primes up to l. That way, it doesn't need to be
+		// recomputed for every factor extracted.
+		ArrayList<Long> primes = getPrimes(l);
+		
+		// Used to hold a prime factor of l
+		long prime = 0;
+		
+		
+		// Continue extracting prime factors from l until we have extracted all
+		// prime factors. Also, doesn't execute for anything less than 2. 
+		while (l > 1) {
+			System.out.println("Iteration " + primeFactors.size() + ":  l=" + l);
+			// Find a prime factor of l, by iterating through the ordered prime 
+			// numbers. 
+			for (int i=0; i<primes.size(); i++) {
+				prime = primes.get(i);
+				System.out.print(prime + ", ");
+				// Test to see if the number provided is divisible by the specified 
+				// prime. If so, add that prime to the list, extract this factor by 
+				// dividing l by this factor, and break this loops 
+				if (l % prime == 0) {
+					primeFactors.add(prime);
+					l /= prime;
+					break;
+				}
+			}
+			
+			System.out.println();
 			
 		}
 		
-//		// Get the factors of l
-//		LinkedList<Long> factors = getFactors(l);
-////		System.out.println("Before: " + factors);
-//		
-//		
-//		// For each factor, if a factor is not a prime number, defined as having 
-//		// two factors, remove it. 
-//		for (Iterator<Long> it = factors.iterator(); it.hasNext();) {
-//			if (getFactors(it.next()).size() != 2) {
-//				it.remove();
-//			}
-//		}
-//		
-//		// Sort the elements as the test cases expect sorted order. This is much more 
-//		// efficient to sort after the fact than it is to use an unoptimized getFactors 
-//		// method that produces a sorted result. 
-//		ArrayList<Long> aFactors = new ArrayList<>(factors);
-//		Collections.sort(aFactors);
-		
-//		System.out.println("After: " + aFactors);
-
-//		return aFactors;
-		for (int i=0; i<100; i++) {
-			System.out.println(i + ": \t" + (isPrime(i) ? "IsPrime" : "IsNotPrime"));
-		}
-		return null;
+		return primeFactors;
 	}
+	
+	
+	/**  
+	 * Returns the set of prime numbers up to and including a specified long. 
+	 * The primes are in their natural ordering. 
+	 * @param l - The limit on prime numbers to add to the set
+	 * @return The set of prime numbers up to the provided number
+	 */
+	private ArrayList<Long> getPrimes(long l) {
+		ArrayList<Long> primes = new ArrayList<>();
+		
+		// Go through each number from 2 to l inclusive, (as 0 & 1 are not prime). 
+		// If a number is prime, add it to the set. 
+		for (long i=2; i<=l; i++) {
+			if (isPrime(i)) {
+				primes.add(i);
+			}
+		}
+		
+		return primes;
+	}
+	
 	
 	/** Returns true if the specified number is prime. False otherwise. */
 	private boolean isPrime(long l) {
@@ -797,15 +822,12 @@ public class EvaluationService {
 			// is a multiple of each number in the set. 
 			for (int k=0; k<set.length; k++) {
 				if (j % set[k] == 0) {
-					System.out.print(j+ ", ");
 					sum += j;
 					// If we have found a multiple, don't possibly repeat it
 					break;
 				}
 			}
 		}
-		System.out.println("");
-		System.out.println(sum);
 		
 		return sum;
 	}
