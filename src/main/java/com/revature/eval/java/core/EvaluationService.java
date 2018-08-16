@@ -1,15 +1,19 @@
 package com.revature.eval.java.core;
 
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
+import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 
 
 public class EvaluationService {
@@ -687,8 +691,19 @@ public class EvaluationService {
 	 * @return
 	 */
 	public boolean isPangram(String string) {
-		// TODO Write an implementation for this method declaration
-		return false;
+		HashSet<Character> letters = new HashSet<>();
+		
+		// Add any encountered letters to the hash set
+		for (int i=0; i<string.length(); i++) {
+			// Only consider letters that have been converted to lower case
+			// This prevents more than 26 characters from being considered. 
+			if (Character.isAlphabetic(Character.toLowerCase(string.charAt(i)))) {
+				letters.add(string.charAt(i));
+			}
+		}
+		
+		// If we have 26 letters in out hash set, we have a pangram
+		return letters.size() == 26;
 	}
 
 	/**
@@ -700,8 +715,7 @@ public class EvaluationService {
 	 * @return
 	 */
 	public Temporal getGigasecondDate(Temporal given) {
-		// TODO Write an implementation for this method declaration
-		return null;
+		return given.plus(1000000000L, ChronoUnit.SECONDS);
 	}
 
 	/**
