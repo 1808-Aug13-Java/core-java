@@ -770,8 +770,6 @@ public class EvaluationService {
 		
 		newTime = newTime.plusSeconds(gigaSecond);
 		
-		System.out.println("Temporal: " + given);
-		System.out.println("New Time: " + newTime);
 		return newTime;
 	}
 
@@ -789,8 +787,25 @@ public class EvaluationService {
 	 * @return
 	 */
 	public int getSumOfMultiples(int i, int[] set) {
-		// TODO Write an implementation for this method declaration
-		return 0;
+		int sum = 0;
+		
+		// For natural numbers from 1 to i...
+		for (int j=1; j<i; j++) {
+			// Check each number in the provided set to see if 'j''
+			// is a multiple of each number in the set. 
+			for (int k=0; k<set.length; k++) {
+				if (j % set[k] == 0) {
+					System.out.print(j+ ", ");
+					sum += j;
+					// If we have found a multiple, don't possibly repeat it
+					break;
+				}
+			}
+		}
+		System.out.println("");
+		System.out.println(sum);
+		
+		return sum;
 	}
 
 	/**
