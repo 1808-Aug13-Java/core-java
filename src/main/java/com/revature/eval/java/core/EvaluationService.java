@@ -1,5 +1,7 @@
 package com.revature.eval.java.core;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalUnit;
@@ -488,7 +490,7 @@ public class EvaluationService {
 		
 		// Get the factors of l
 		LinkedList<Long> factors = getFactors(l);
-		System.out.println("Before: " + factors);
+//		System.out.println("Before: " + factors);
 		
 		
 		// For each factor, if a factor is not a prime number, defined as having 
@@ -505,7 +507,7 @@ public class EvaluationService {
 		ArrayList<Long> aFactors = new ArrayList<>(factors);
 		Collections.sort(aFactors);
 		
-		System.out.println("After: " + aFactors);
+//		System.out.println("After: " + aFactors);
 		return aFactors;
 	}
 	
@@ -597,8 +599,31 @@ public class EvaluationService {
 	 * @return
 	 */
 	public int calculateNthPrime(int i) {
+		
 		// TODO Write an implementation for this method declaration
-		return 0;
+		int primes = 0;
+		
+		// Set currentNumber to 1 so that it starts testing primes at 2. s
+		int currentNumber = 0;
+		
+		// If there is not a valid ith prime, IE, i <= 0, throw an exception
+		if (i <= 0) {
+			throw new IllegalArgumentException("i Must be positive: " + i);
+		}
+		
+		while (primes < i) {
+			// Increment the current number
+			currentNumber++;
+			
+			// If the currentNumber is prime, increment primes
+			if (getFactors(currentNumber).size() == 2) {
+				primes++;
+			}
+		}
+		
+		//TODO: Use my getFactors() function. At least it can get some use
+		
+		return (int) currentNumber;
 	}
 
 	/**
@@ -715,7 +740,39 @@ public class EvaluationService {
 	 * @return
 	 */
 	public Temporal getGigasecondDate(Temporal given) {
-		return given.plus(1000000000L, ChronoUnit.SECONDS);
+		// A gigasecond, (one billion seconds)
+		final long gigaSecond = 1000000000L;
+		
+		
+		LocalDateTime newTime = null;
+		
+		//Because there are two classes of time measurement on the back end, 
+		// I need to accommodate the possibility that the Temporal doesn't 
+		// support seconds. Because everything after the Date class was GENIUS!
+		if (given.isSupported(ChronoUnit.SECONDS)) {
+			newTime = LocalDateTime.of(
+					given.get(ChronoField.YEAR), 
+					given.get(ChronoField.MONTH_OF_YEAR), 
+					given.get(ChronoField.DAY_OF_MONTH), 
+					given.get(ChronoField.HOUR_OF_DAY), 
+					given.get(ChronoField.MINUTE_OF_HOUR), 
+					given.get(ChronoField.SECOND_OF_MINUTE));
+			
+		}
+		// Otherwise, just use days...
+		else {
+			newTime = LocalDateTime.of(
+					given.get(ChronoField.YEAR), 
+					given.get(ChronoField.MONTH_OF_YEAR), 
+					given.get(ChronoField.DAY_OF_MONTH),
+					0, 0, 0);
+		}
+		
+		newTime = newTime.plusSeconds(gigaSecond);
+		
+		System.out.println("Temporal: " + given);
+		System.out.println("New Time: " + newTime);
+		return newTime;
 	}
 
 	/**
