@@ -473,6 +473,15 @@ public class EvaluationService {
 	 * @return
 	 */
 	public List<Long> calculatePrimeFactorsOf(long l) {
+		/*
+		 * THE FLIPPEN DOCUMENTATION COULD HAVE SAID: 
+		 * "Compute all combinations of prime factors in sorted order" 
+		 * BUT NO! IT JUST SAID: 
+		 * "Compute the prime factors of a given natural number"
+		 * SO I DID! AND ALL THAT WORK MAKING AN OPTIMIZED FACTORS 
+		 * FUNCTION, WASTED!!!
+		 */
+		
 		// Get the factors of l
 		LinkedList<Long> factors = getFactors(l);
 		System.out.println("Before: " + factors);
