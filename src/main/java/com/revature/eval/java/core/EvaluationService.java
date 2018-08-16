@@ -479,62 +479,74 @@ public class EvaluationService {
 	 * @return
 	 */
 	public List<Long> calculatePrimeFactorsOf(long l) {
+		//TODO: Finish this
 		
-		// Get the factors of l
-		LinkedList<Long> factors = getFactors(l);
-//		System.out.println("Before: " + factors);
+		// A list of prime factors of l
+		LinkedList<Long> primeFactors = new LinkedList<>();
 		
-		
-		// For each factor, if a factor is not a prime number, defined as having 
-		// two factors, remove it. 
-		for (Iterator<Long> it = factors.iterator(); it.hasNext();) {
-			if (getFactors(it.next()).size() != 2) {
-				it.remove();
-			}
+		while (!isPrime(l)) {
+			
 		}
 		
-		// Sort the elements as the test cases expect sorted order. This is much more 
-		// efficient to sort after the fact than it is to use an unoptimized getFactors 
-		// method that produces a sorted result. 
-		ArrayList<Long> aFactors = new ArrayList<>(factors);
-		Collections.sort(aFactors);
+//		// Get the factors of l
+//		LinkedList<Long> factors = getFactors(l);
+////		System.out.println("Before: " + factors);
+//		
+//		
+//		// For each factor, if a factor is not a prime number, defined as having 
+//		// two factors, remove it. 
+//		for (Iterator<Long> it = factors.iterator(); it.hasNext();) {
+//			if (getFactors(it.next()).size() != 2) {
+//				it.remove();
+//			}
+//		}
+//		
+//		// Sort the elements as the test cases expect sorted order. This is much more 
+//		// efficient to sort after the fact than it is to use an unoptimized getFactors 
+//		// method that produces a sorted result. 
+//		ArrayList<Long> aFactors = new ArrayList<>(factors);
+//		Collections.sort(aFactors);
 		
 //		System.out.println("After: " + aFactors);
-		return aFactors;
+
+//		return aFactors;
+		for (int i=0; i<100; i++) {
+			System.out.println(i + ": \t" + (isPrime(i) ? "IsPrime" : "IsNotPrime"));
+		}
+		return null;
 	}
 	
-	
-	/** 
-	 * Provided a long, computes the factors of said long. 
-	 * Negative numbers not implemented. 
-	 * @param l - The long to compute the factors of. 
-	 * @return A list of factors
-	 */
-	private LinkedList<Long> getFactors(long l) {
-		// The list of factors
-		LinkedList<Long> factors = new LinkedList<>();
-		
+	/** Returns true if the specified number is prime. False otherwise. */
+	private boolean isPrime(long l) {
 		// Get the square root of the long, as there will never be a factor greater than
 		// its square root. The loss of precision is accounted by incrementing by one, which
 		// will cover cases where we might miss a number if l > 2^52. 
 		long sqrt = (long) Math.sqrt(l) + 1L;
 		
+		// A count of the number of factors
+		long factors = 0;
+		
+		// There are only two factors in a prime number, itself and 1. 
+		final long FACTORS_OF_A_PRIME = 2;
+		
 		// Go through each number from 1 up to the square root and check to see if it is 
-		// a factor of l. If it is, add it and its complementary factor to the list
-		for (long i=1; i<sqrt; i++) {
+		// a factor of l. If it is, add 2, one for it, and one for its compliment. 
+		// If there are ever more than 2 factors, it is not a prime number
+		for (long i=1; i < sqrt && factors <= FACTORS_OF_A_PRIME; i++) {
 			if (l % i == 0) {
-				factors.add(i);
+				factors++;
 				
-				// Only add the complementing factor if it isn't a perfect square
+				// Only add the complementing factor if it isn't a perfect square or 1
 				if (i * i != l) {
-					factors.add(l / i);
+					factors++;
 				}
 			}
 		}
 		
-		
-		return factors;
+		// If there are not two factors, it is not prime.
+		return factors == FACTORS_OF_A_PRIME;
 	}
+	
 	
 	
 	/**
@@ -591,8 +603,6 @@ public class EvaluationService {
 	 * @return
 	 */
 	public int calculateNthPrime(int i) {
-		
-		// TODO Write an implementation for this method declaration
 		int primes = 0;
 		
 		// Set currentNumber to 1 so that it starts testing primes at 2. s
@@ -608,7 +618,7 @@ public class EvaluationService {
 			currentNumber++;
 			
 			// If the currentNumber is prime, increment primes
-			if (getFactors(currentNumber).size() == 2) {
+			if (isPrime(currentNumber)) {
 				primes++;
 			}
 		}
