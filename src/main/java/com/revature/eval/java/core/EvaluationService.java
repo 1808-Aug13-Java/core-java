@@ -630,6 +630,7 @@ public class EvaluationService {
 		// TODO: is also divisible by that composite number's prime factors. 
 		
 		// Go through each number from 2 to l inclusive, (as 0 & 1 are not prime). 
+		// It needs to be inclusive as l itself might be prime. 
 		// If a number is prime, add it to the set. 
 		for (long i=2; i<=l; i++) {
 			if (isPrime(i)) {
@@ -778,7 +779,13 @@ public class EvaluationService {
 	 *
 	 */
 	static class AtbashCipher {
-
+		
+		/** The number of letters in the alphabet. */
+		private static final int LETTERS_IN_ALPHA = 26;
+		
+		/** The offset in the ASCII table that the lower case letters end at. */
+		private static final int LOWER_CASE_END_OFFSET = (int) 'z';
+		
 		/**
 		 * Question 13
 		 * 
@@ -786,8 +793,31 @@ public class EvaluationService {
 		 * @return
 		 */
 		public static String encode(String string) {
+			// A string builder to hold the newly encoded string
+			StringBuilder sBuilder = new StringBuilder();
+			
+			// Holds each character as we manipulate it
+			char ch = '\0';
+			
+			// Encode each character of the string
+			for (int i=0; i<string.length(); i++) {
+				// First, convert the character to lower case 
+				ch = Character.toLowerCase(string.charAt(i));
+				
+				// Shift the value of the character directly after where the lower 
+				// case alphabet ends. 'a' is now 1 after where 'z' was, 'b' is 2
+				// after, and so on. This allows us to shift the characters back 
+				// based on their distance from z. 
+				ch += LETTERS_IN_ALPHA;
+				
+				
+				
+			}
+			
+			
+			
 			// TODO Write an implementation for this method declaration
-			return null;
+			return sBuilder.toString();
 		}
 
 		/**
@@ -800,6 +830,9 @@ public class EvaluationService {
 			// TODO Write an implementation for this method declaration
 			return null;
 		}
+		
+		
+		
 	}
 
 	/**
