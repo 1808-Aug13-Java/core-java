@@ -417,8 +417,63 @@ public class EvaluationService {
 	 * @return
 	 */
 	public String toPigLatin(String string) {
-		// TODO Write an implementation for this method declaration
-		return null;
+		// Parse the string into individual tokens based on default whitespace
+		Scanner parser = new Scanner(string);
+		
+		// Used to construct the new return string
+		StringBuilder sBuilder = new StringBuilder();
+		
+		// Get a list of vowel characters
+		Character[] vowelArray = {'a', 'e', 'i', 'o', 'u'};
+		List<Character> vowels = Arrays.asList(vowelArray);
+		
+		// Index of the first vowel
+		int vowelIndex = -1;
+		
+		// A token from the scanner. 
+		String token;
+		
+		// Convert each word in the string into pig latin
+		while (parser.hasNext()) {
+			token = parser.next();
+			
+			// Find the next vowel in the token, or -1 if there isn't one
+			vowelIndex = -1;
+			for(int i=0; i<token.length(); i++) {
+				// If the character is a vowel, we have found the index we need. 
+				// Special case if we have a 'u' after a 'q'. The 'u' is not a 
+				// vowel in this case. 
+				if (vowels.contains(token.charAt(i))
+						&& !(i != 0 
+							&& token.charAt(i) == 'u' 
+							&& token.charAt(i-1) == 'q')) 
+				{
+					vowelIndex = i;
+					break;
+				}
+			}
+			
+			// If there is a vowel, break the string into pig latin
+			if (vowelIndex != -1) {
+				sBuilder.append(token.substring(vowelIndex));
+				sBuilder.append(token.substring(0, vowelIndex));
+				sBuilder.append("ay");
+			}
+			// Otherwise, leave the word alone if there are no vowels.
+			else {
+				sBuilder.append(token);
+			}
+			
+			// If there is another token after this one, insert a space
+			if (parser.hasNext()) {
+				sBuilder.append(' ');
+			}
+		}
+		
+		parser.close();
+		System.out.println(sBuilder);
+		
+		return sBuilder.toString();
 	}
 
 	/**
@@ -480,7 +535,6 @@ public class EvaluationService {
 	 * @return
 	 */
 	public List<Long> calculatePrimeFactorsOf(long l) {
-		//TODO: Finish this
 		
 		// A list of prime factors of l
 		LinkedList<Long> primeFactors = new LinkedList<>();
@@ -496,12 +550,10 @@ public class EvaluationService {
 		// Continue extracting prime factors from l until we have extracted all
 		// prime factors. Also, doesn't execute for anything less than 2. 
 		while (l > 1) {
-			System.out.println("Iteration " + primeFactors.size() + ":  l=" + l);
 			// Find a prime factor of l, by iterating through the ordered prime 
 			// numbers. 
 			for (int i=0; i<primes.size(); i++) {
 				prime = primes.get(i);
-				System.out.print(prime + ", ");
 				// Test to see if the number provided is divisible by the specified 
 				// prime. If so, add that prime to the list, extract this factor by 
 				// dividing l by this factor, and break this loops 
@@ -511,9 +563,6 @@ public class EvaluationService {
 					break;
 				}
 			}
-			
-			System.out.println();
-			
 		}
 		
 		return primeFactors;
