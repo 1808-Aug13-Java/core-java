@@ -624,6 +624,11 @@ public class EvaluationService {
 	private ArrayList<Long> getPrimes(long l) {
 		ArrayList<Long> primes = new ArrayList<>();
 		
+		// TODO: This can be optimized by only checking if a number contains other
+		// TODO: prime numbers as factors, instead of checking all numbers. As prime numbers
+		// TODO: are all factors of composite numbers, any number that has a composite factor 
+		// TODO: is also divisible by that composite number's prime factors. 
+		
 		// Go through each number from 2 to l inclusive, (as 0 & 1 are not prime). 
 		// If a number is prime, add it to the set. 
 		for (long i=2; i<=l; i++) {
@@ -736,14 +741,14 @@ public class EvaluationService {
 		while (primes < i) {
 			// Increment the current number
 			currentNumber++;
-			
+			// TODO: Optimize, as can be expensive. 
+			// TODO: Note: All composite numbers are made of primes, so only prime numbers
+			// TODO: need to be checked when checking for a prime. OPTIMIZATION!!!!!
 			// If the currentNumber is prime, increment primes
 			if (isPrime(currentNumber)) {
 				primes++;
 			}
 		}
-		
-		//TODO: Use my getFactors() function. At least it can get some use
 		
 		return (int) currentNumber;
 	}
