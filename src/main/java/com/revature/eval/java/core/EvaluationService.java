@@ -161,6 +161,7 @@ public class EvaluationService {
 
 	}
 
+	
 	/**
 	 * 4. Given a word, compute the scrabble score for that word.
 	 * 
@@ -177,9 +178,54 @@ public class EvaluationService {
 	 * @return
 	 */
 	public int getScrabbleScore(String string) {
-		// TODO Write an implementation for this method declaration
-		return 0;
+		// The sum of points for each character
+		int score = 0;
+		
+		// If the score table has not yet been computed, compute it. 
+		if (scrabbleScoreTable == null) {
+			scrabbleScoreTable = new HashMap<>();
+			scrabbleScoreTable.put('a', 1);
+			scrabbleScoreTable.put('e', 1);
+			scrabbleScoreTable.put('i', 1);
+			scrabbleScoreTable.put('o', 1);
+			scrabbleScoreTable.put('u', 1);
+			scrabbleScoreTable.put('l', 1);
+			scrabbleScoreTable.put('n', 1);
+			scrabbleScoreTable.put('r', 1);
+			scrabbleScoreTable.put('s', 1);
+			scrabbleScoreTable.put('t', 1);
+			scrabbleScoreTable.put('d', 2);
+			scrabbleScoreTable.put('g', 2);
+			scrabbleScoreTable.put('b', 3);
+			scrabbleScoreTable.put('c', 3);
+			scrabbleScoreTable.put('m', 3);
+			scrabbleScoreTable.put('p', 3);
+			scrabbleScoreTable.put('f', 4);
+			scrabbleScoreTable.put('h', 4);
+			scrabbleScoreTable.put('v', 4);
+			scrabbleScoreTable.put('w', 4);
+			scrabbleScoreTable.put('y', 4);
+			scrabbleScoreTable.put('k', 5);
+			scrabbleScoreTable.put('j', 8);
+			scrabbleScoreTable.put('x', 8);
+			scrabbleScoreTable.put('q', 10);
+			scrabbleScoreTable.put('z', 10);
+		}
+		
+		// For each character, add up it's score to the current running 
+		// score for the word. 
+		for (int i=0; i<string.length(); i++) {
+			score += scrabbleScoreTable.get(Character.toLowerCase(string.charAt(i)));
+		}
+		
+		return score;
 	}
+	
+	/** Allows a mapping of characters to their value in scrabble. 
+	 * Lazily initialized when needed by the getScrabbleScore method. 
+	 * Only one instance needs to be computed once. */
+	private static HashMap<Character, Integer> scrabbleScoreTable;
+	
 
 	/**
 	 * 5. Clean up user-entered phone numbers so that they can be sent SMS messages.
@@ -423,7 +469,8 @@ public class EvaluationService {
 		// Used to construct the new return string
 		StringBuilder sBuilder = new StringBuilder();
 		
-		// Get a list of vowel characters
+		// Get a list of vowel characters. An ArrayList has faster searching
+		// than a HashSet for small lists. 
 		Character[] vowelArray = {'a', 'e', 'i', 'o', 'u'};
 		List<Character> vowels = Arrays.asList(vowelArray);
 		
@@ -471,7 +518,6 @@ public class EvaluationService {
 		}
 		
 		parser.close();
-		System.out.println(sBuilder);
 		
 		return sBuilder.toString();
 	}
