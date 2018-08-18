@@ -1,23 +1,17 @@
 package com.revature.eval.java.core;
 
-import java.lang.reflect.Method;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
-import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.concurrent.TimeUnit;
 
 
 public class EvaluationService {
@@ -369,6 +363,7 @@ public class EvaluationService {
 	static class BinarySearch<T> {
 		private List<T> sortedList;
 
+		@SuppressWarnings("unchecked")
 		public int indexOf(T t) {
 			// In order to perform a binary search, elements must have some notion 
 			// of which is greater or otherwise be comparable. Therefore, the list 
@@ -1249,10 +1244,6 @@ public class EvaluationService {
 		// an  operator between them. This will return incorrect results if the 
 		// string is not properly formated, or if more than two operators are 
 		// provided. 
-		// TODO Write an implementation for this method declaration
-		// This is the value we return after obtaining the result of the math
-		// Not going to worry about overflow as the return type needs to be int anyway
-		int result = 0;
 		
 		// Used to parse the different parts parts of the string based on whitespace
 		Scanner scanner = new Scanner(string);
