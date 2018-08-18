@@ -784,7 +784,7 @@ public class EvaluationService {
 		private static final int LETTERS_IN_ALPHA = 26;
 		
 		/** The offset in the ASCII table that the lower case letters end at. */
-		private static final int LOWER_CASE_END_OFFSET = (int) 'z';
+		private static final int LOWER_CASE_END_OFFSET = ((int) 'z') + 1;
 		
 		/**
 		 * Question 13
@@ -793,31 +793,7 @@ public class EvaluationService {
 		 * @return
 		 */
 		public static String encode(String string) {
-			// A string builder to hold the newly encoded string
-			StringBuilder sBuilder = new StringBuilder();
-			
-			// Holds each character as we manipulate it
-			char ch = '\0';
-			
-			// Encode each character of the string
-			for (int i=0; i<string.length(); i++) {
-				// First, convert the character to lower case 
-				ch = Character.toLowerCase(string.charAt(i));
-				
-				// Shift the value of the character directly after where the lower 
-				// case alphabet ends. 'a' is now 1 after where 'z' was, 'b' is 2
-				// after, and so on. This allows us to shift the characters back 
-				// based on their distance from z. 
-				ch += LETTERS_IN_ALPHA;
-				
-				
-				
-			}
-			
-			
-			
-			// TODO Write an implementation for this method declaration
-			return sBuilder.toString();
+			return runCipher(string, true);
 		}
 
 		/**
@@ -827,11 +803,75 @@ public class EvaluationService {
 		 * @return
 		 */
 		public static String decode(String string) {
-			// TODO Write an implementation for this method declaration
-			return null;
+			return runCipher(string, false);
 		}
 		
 		
+		/**
+		 * A private helper method to facilitate the encoding and decoding of 
+		 * atbash cipher. 
+		 * @param str - The string to encode or decode
+		 * @param encode - True if we are encoding, false if decoding. 
+		 * @return - The resulting string from running the cipher. 
+		 */
+		private static String runCipher(String string, boolean encode) {
+			// A string builder to hold the newly encoded string
+			StringBuilder sBuilder = new StringBuilder();
+			
+			// Holds each character as we manipulate it
+			char ch = '\0';
+			
+			// Current character counter
+			int characterCounter = 0;
+			
+			System.out.println("Input: " + string);
+			// Encode each character of the string
+			for (int i=0; i<string.length(); i++) {
+				// First, convert the character to lower case 
+				ch = Character.toLowerCase(string.charAt(i));
+				
+			
+				
+				// If the character isn't a digit or a letter, ignore it entirely
+				if (!Character.isDigit(ch) && !Character.isAlphabetic(ch)) {
+					continue;
+				}
+				
+				// If the character is a letter, flip it according to the cipher. 
+				// If the character is not an alphabetic character, don't shift it. 
+				// Just append it.
+				if (Character.isAlphabetic(ch)) {
+					// Shift the value of the character directly after where the lower 
+					// case alphabet ends. 'a' is now 1 after where 'z' was, 'b' is 2
+					// after, and so on. This allows us to shift the characters back 
+					// based on their distance from z. 
+					ch += LETTERS_IN_ALPHA;
+					
+					// Now shift back the character based on its distance from the OFFSET CHAR
+					ch -= 1 + 2 * ((int) ch - LOWER_CASE_END_OFFSET);
+				}
+				
+				// If we are encoding, every five characters that we append, we want 
+				// to add a space. The only time we don't is when we have reached 
+				// the end of the input string. 
+				// We do mod 6 as a special case for the first character since we add after 
+				// adding the sixth character to avoid adding spaces at the end of the string
+				characterCounter++;
+				if (encode && characterCounter % 6 == 0) {
+					sBuilder.append(" ");
+					characterCounter = 1;
+				}
+				
+				// Finally, add the shifted character to or newly constructed string
+				sBuilder.append(ch);
+			}
+			if (!encode)
+			System.out.println("Output: " + sBuilder);
+			
+			
+			// TODO Write an implementation for this method declaration
+			return sBuilder.toString();
+		}
 		
 	}
 
