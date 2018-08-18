@@ -1,5 +1,6 @@
 package com.revature.eval.java.core;
 
+import java.lang.reflect.Method;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
@@ -702,6 +703,16 @@ public class EvaluationService {
 	 * quick brown fox jumps over the lazy dog.
 	 */
 	static class RotationalCipher {
+		
+		/** The number of letters in the alphabet. */
+		private static final int LETTERS_IN_ALPHA = 26;
+		
+		/** The offset in the ASCII table that the upper case letters begin at. */
+		private static final int UPPER_CASE_OFFSET = (int) 'A';
+		
+		/** The offset in the ASCII table that the lower case letters begin at. */
+		private static final int LOWER_CASE_OFFSET = (int) 'a';
+		
 		private int key;
 
 		public RotationalCipher(int key) {
@@ -710,8 +721,61 @@ public class EvaluationService {
 		}
 
 		public String rotate(String string) {
-			// TODO Write an implementation for this method declaration
-			return null;
+			// A string builder to build up the resulting string
+			StringBuilder sBuilder = new StringBuilder();
+			
+			// Holds each character as as an integer as it is manipulated
+			int chInt = '\0';
+			
+			// The offset we use on a character, which depends on if a character 
+			// is upper case or lower case. 
+			int offset = 0;
+			
+			// Loop through each character in the string, running the cipher if it 
+			// is a letter of the alphabet and ignoring it if it isn't. 
+			for (int i=0; i<string.length(); i++) {
+				chInt = (int) string.charAt(i);
+				
+				// If the character is not alphabetic, just append it
+				// without running the cipher
+				if (!Character.isAlphabetic(chInt)) {
+					sBuilder.append((char) chInt);
+					continue;
+				}
+				
+				// Get the offset to use based on if this is an upper case or 
+				// lower case character. 
+				if (Character.isUpperCase(chInt)) {
+					offset = UPPER_CASE_OFFSET;
+				} 
+				else {
+					offset = LOWER_CASE_OFFSET;
+				}
+				
+				// Offset the character so that the alphabet is now zero based, 
+				// i.e. 'a' and 'A' are 0 and 'z' and 'Z' are 25. 
+				chInt -= offset;
+				
+				// Now add the rotational key
+				chInt += this.key;
+				
+				// Now use modulo to account for going past the end of the alphabet
+				chInt %= LETTERS_IN_ALPHA;
+				// Also account for negative rotations
+				if (chInt < 0) {
+					chInt += LETTERS_IN_ALPHA;
+				}
+				
+				// Undo the offset moving the character back to the alphabetic 
+				// ascii codes. 
+				chInt += offset;
+				
+				// Finally, cast back to a char, (safe as the number is between 
+				// 65 & 122 inclusive) and append the char to the encoded string
+				sBuilder.append((char) chInt);
+			}
+			
+			return sBuilder.toString();
 		}
 
 	}
@@ -824,7 +888,6 @@ public class EvaluationService {
 			// Current character counter
 			int characterCounter = 0;
 			
-			System.out.println("Input: " + string);
 			// Encode each character of the string
 			for (int i=0; i<string.length(); i++) {
 				// First, convert the character to lower case 
@@ -865,11 +928,7 @@ public class EvaluationService {
 				// Finally, add the shifted character to or newly constructed string
 				sBuilder.append(ch);
 			}
-			if (!encode)
-			System.out.println("Output: " + sBuilder);
 			
-			
-			// TODO Write an implementation for this method declaration
 			return sBuilder.toString();
 		}
 		
@@ -898,8 +957,67 @@ public class EvaluationService {
 	 * @return
 	 */
 	public boolean isValidIsbn(String string) {
-		// TODO Write an implementation for this method declaration
-		return false;
+		// Holds the running result of the ISBN number validity formula
+		int result = 0;
+		
+		// Keeps track of if the check has failed for some reason
+		boolean failedCheck = false;
+		
+		// The number of digits we expect to encounter. This is also used in the 
+		// formula to test validity. It is decremented for each digit. 
+		// Therefore, if this is not 0 by the end, the number is not valid. 
+		int expectedDigits = 10;
+		
+		// Holds each character as we manipulate it
+		char ch = '\0';
+		
+		// Holds the number that we parse from the character 
+		int number = 0;
+		
+		// The defined value of an 'x' character
+		final int X_VALUE = 10;
+		
+		
+		// For each character in the string, run the math formula
+		// stop if there is some reason besides math that causes this string to be 
+		// invalid ISBN.
+		for (int i=0; i<string.length() && !failedCheck; i++) {
+			ch = Character.toLowerCase(string.charAt(i));
+			
+			// If the character is a digit or an 'x', which is counts as a digit, 
+			// run it through the formula
+			if (Character.isDigit(ch) || ch == 'x') {
+				// Special case: an X represents a 10 digit. 
+				if (ch == 'x') {
+					number = X_VALUE;
+				}
+				// Otherwise, convert our character number to an integer in base 10.
+				else {
+					
+					number = Character.digit(ch, 10);
+				}
+				
+				// The formula to validate a ISBN-10 number
+				result += number * expectedDigits;
+				expectedDigits--;
+				
+				// If we have encountered more than the expected digits, this is not 
+				// a valid ISBN-10 number
+				if (expectedDigits < 0) {
+					failedCheck = true;
+				}
+			}
+			// Otherwise, if the character is a hyphen, ignore it. If it is another 
+			// character besides that, the number is invalid.
+			else if (ch != '-') {
+				failedCheck = true;
+			}
+		}
+		
+		// Return true if the resulting number mod 11 == 0. THis is part of the 
+		// validation of the ISBN-10. Only return ture if the number hasn't been 
+		// invalidated for another reason. 
+		return !failedCheck && expectedDigits == 0 && result % 11 == 0;
 	}
 
 	/**
@@ -1042,8 +1160,61 @@ public class EvaluationService {
 	 * @return
 	 */
 	public boolean isLuhnValid(String string) {
-		// TODO Write an implementation for this method declaration
-		return false;
+		// Holds the running result of the ISBN number validity formula
+		int result = 0;
+		
+		// THe current number we are manipulating. 
+		int currentNumber = 0;
+		
+		// Keeps track of if the check failed for some reason
+		boolean failedCheck = false;
+		
+		// Holds each character as we manipulate it
+		char ch = '\0';
+		
+		// Holds each number as we manipulate it
+		int number = 0;
+		
+		
+		
+		// Starting from the right perform the Luhn formula, doubling every 
+		// second number, subtracting 9 if the double results in >= 10
+		// Break when we are done checking, or if the number has been invalidated
+		for (int i = string.length() - 1; i>= 0; i--) {
+			ch = string.charAt(i);
+			
+			// If the character is a space, ignore it. 
+			if (ch == ' ') {
+				continue;
+			}
+			// Otherwise, if the character is not a digit it automatically fails
+			else if (!Character.isDigit(ch)) {
+				failedCheck = true;
+				break;
+			}
+			
+			// Convert our character number to an integer in base 10.
+			number = Character.digit(ch, 10);
+			
+			// Double every second number, subtracting 99 if it goes to 10 or over.
+			currentNumber++;
+			if (currentNumber % 2 == 0) {
+				number *= 2;
+				
+				// If the result is ten or greater, subtract 9 according to 
+				// the Luhn formula
+				if (number >= 10) { 
+					number -= 9;
+				}
+			}
+			
+			// Add the number to the running sum
+			result += number;
+		}
+		
+		// Return true if the resulting number is divisible by ten, and the check
+		// didn't fail for some other reason
+		return !failedCheck && result % 10 == 0;
 	}
 
 	/**
@@ -1074,8 +1245,91 @@ public class EvaluationService {
 	 * @return
 	 */
 	public int solveWordProblem(String string) {
+		// Note: this implementation assumes correct input of two numbers with 
+		// an  operator between them. This will return incorrect results if the 
+		// string is not properly formated, or if more than two operators are 
+		// provided. 
 		// TODO Write an implementation for this method declaration
-		return 0;
+		// This is the value we return after obtaining the result of the math
+		// Not going to worry about overflow as the return type needs to be int anyway
+		int result = 0;
+		
+		// Used to parse the different parts parts of the string based on whitespace
+		Scanner scanner = new Scanner(string);
+		
+		// Holds a token from the string parser.
+		String token = null;
+		
+		// Holds the numbers in the equation
+		ArrayList<Integer> numbers = new ArrayList<>();
+		
+		// For use with lambda expressions to define the operation dased on the word
+		Operation operation = null;
+		
+		
+		// While there is more input, parse the string
+		while (scanner.hasNext()) {
+			token = scanner.next();
+			
+			// If the token contains a number, even with non-number characters, 
+			// extract the number with regex and put it in the list of numbers. 
+			// Then continue with the loop. 
+			if (token.matches(".*[0-9]+.*")) {
+				token = token.replaceAll("[^0-9\\-]", "");
+				numbers.add(Integer.parseInt(token));
+				continue;
+			}
+			
+			
+			// If it's not a number, switch to see if we should perform an 
+			// operation, and which operation to perform. Only do this if operation 
+			// hasn't been previously defined. 
+			if (operation == null) {
+				switch(token) {
+				case "plus": 
+					operation = (int i1, int i2) -> {return i1 + i2;};
+					break;
+				case "minus": 
+					operation = (int i1, int i2) -> {return i1 - i2;};
+					break;
+				case "multiplied": 
+					operation = (int i1, int i2) -> {return i1 * i2;};
+					break;
+				case "divided": 
+					operation = (int i1, int i2) -> {return i1 / i2;};
+					break;
+				// No default case. Just ignore other strings
+				}
+			}
+		}
+		
+		// Close that scanner. No resources left behind. 
+		scanner.close();
+		
+		// If we don't have an operation, throw an exception. 
+		if (operation == null) {
+			throw new IllegalArgumentException(
+						"No operation found within input: " + string);
+		}
+		
+		// If we don't have at least two arguments throw an exception
+		if (numbers.size() < 2) {
+			throw new IllegalArgumentException(
+						"Need at least two numbers to operate on: " + string);
+		}
+		
+		
+		// Take the first two numbers from the list and perform the given 
+		// operation on it. Return the result
+		return operation.execute(numbers.get(0), numbers.get(1));
+	}
+	
+	/** 
+	 * A private interface for use in lambda expressions in the solveWordProblem
+	 * method.  
+	 */
+	private interface Operation {
+		int execute(int i1, int i2);
 	}
 
 }
